@@ -1,0 +1,203 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ page session="false"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Platform Redline Test</title>
+<meta charset="utf-8">
+<script src="resources/js/jquery-1.12.0.min.js"></script>
+<script src="resources/js/bootstrap.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="resources/css/bootstrap.css" rel="stylesheet">
+<link href="resources/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+/* Remove the navbar's default margin-bottom and rounded borders */
+.navbar {
+	margin-bottom: 0;
+	border-radius: 0;
+}
+
+/* Set height of the grid so .sidenav can be 100% (adjust as needed) */
+.row.content {
+	height: 450px
+}
+
+/* Set gray background color and 100% height */
+.sidenav {
+	padding-top: 20px;
+	background-color: #f1f1f1;
+	height: 100%;
+}
+
+/* Set black background color, white text and some padding */
+footer {
+	background-color: #555;
+	color: white;
+	padding: 15px;
+}
+
+/* On small screens, set height to 'auto' for sidenav and grid */
+@media screen and (max-width: 767px) {
+	.sidenav {
+		height: auto;
+		padding: 15px;
+	}
+	.row.content {
+		height: auto;
+	}
+}
+</style>
+</head>
+<body>
+
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">Logo</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="#">Home</a></li>
+					<li><a href="#">About</a></li>
+					<li><a href="#">Projects</a></li>
+					<li><a href="#">Contact</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#"><span class="glyphicon glyphicon-log-in"></span>
+							Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container-fluid text-center">
+		<div class="row content">
+			<div class="col-sm-2 sidenav">
+				<p align="left">
+					<a href="testsuite.html">TestSuite</a>
+				</p>
+				<p align="left">
+					<a href="testcase.html">TestCase</a>
+				</p>
+				<p align="left">
+					<a href="#">Reports</a>
+				</p>
+				<p align="left">
+					<a href="#">Failed Tests</a>
+				</p>
+				<p align="left">
+					<a href="#">Passed Tests</a>
+				</p>
+			</div>
+			<div class="col-sm-8 text-left">
+				<div class="container">
+					<h1>Add TestSuite</h1>
+				</div>
+
+				<c:url var="addAction" value="/testsuite/add"></c:url>
+				<form:form action="${addAction}" commandName="testsuite">
+
+					<div class="btn-group">
+						<table class="table" border="0">
+							<c:if test="${!empty testsuite.testName}">
+								<tr>
+									<td><form:label path="id">
+											<spring:message text="ID" />
+										</form:label></td>
+									<td><form:input path="id" readonly="true" size="8"
+											disabled="true" /> <form:hidden path="id" /></td>
+								</tr>
+							</c:if>
+							<tr>
+								<td><form:label path="suiteName">
+										<spring:message text="Name" />
+									</form:label></td>
+								<td><form:input path="suiteName"   /></td>
+							</tr>
+							<tr>
+								<td><form:label path="testName">
+										<spring:message text="Tests Assigned" />
+									</form:label></td>
+								<td><form:input path="testName" /></td>
+							</tr>
+							<tr>
+								<td><form:label path="testPageTitle">
+										<spring:message text="Page Title" />
+									</form:label></td>
+								<td><form:input path="testPageTitle" /></td>
+							</tr>
+							<tr>
+								<td><form:label path="testPageXpath">
+										<spring:message text="Page Xpath" />
+									</form:label></td>
+								<td><form:input path="testPageXpath" /></td>
+							</tr>
+
+							<tr>
+								<td colspan="2"><c:if test="${!empty teststep.fieldType}">
+										<input type="submit" class="btn btn-primary pull-right"
+											value="<spring:message text="Edit Step"/>" />
+									</c:if> <c:if test="${empty teststep.fieldType}">
+										<input type="submit" class="btn btn-primary pull-right"
+											value="<spring:message text="Add Suite"/>" />
+
+
+									</c:if></td>
+							</tr>
+						</table>
+					</div>
+				</form:form>
+				<br>
+				<h3>TestSuite List</h3>
+				<c:if test="${!empty listTestSuites}">
+					<div class="table-responsive">
+						<table class="table">
+							<tr>
+								<th width="120">ID</th>
+								<th width="120">Name</th>
+								<th width="120">Tests Assigned</th>
+								<th width="120">Page Title</th>
+								<th width="120">Page Xpath</th>
+								<th width="60">Edit</th>
+								<th width="60">Delete</th>
+							</tr>
+							<c:forEach items="${listTestSuites}" var="testsuite">
+								<tr>
+									<td>${testsuite.id}</td>
+									<td>${testsuite.suiteName}</td>
+									<td>${testsuite.testName}</td>
+									<td>${testsuite.testPageTitle}</td>
+									<td>${testsuite.testPageXpath}</td>
+									<td><a href="<c:url value='/edit/${testsuite.id}' />">Edit</a></td>
+									<td><a href="<c:url value='/remove/${testsuite.id}' />">Delete</a></td>
+								</tr>
+							</c:forEach>
+						</table>
+					</div>
+				</c:if>
+			</div>
+			<div class="col-sm-2 sidenav">
+				<div class="well">
+					<p>ADS</p>
+				</div>
+				<div class="well">
+					<p>ADS</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="container-fluid text-center">
+		<p>Footer Text</p>
+	</footer>
+
+</body>
+</html>
